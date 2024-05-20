@@ -90,7 +90,7 @@ module.exports = configure(function (/* ctx */) {
       open: true, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'http://localhost:5001',
+          target: 'http://backend:5001',
           changeOrigin: true
         }
       }

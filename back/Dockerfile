@@ -13,6 +13,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code into the container
 COPY . .
 
+ENV DB_HOST = db
+ENV DB_PORT = 3306
+ENV DB_USER = root
+ENV DB_PASSWORD = pass
+ENV DB_DATABASE = planner
+
 # Expose the port the application runs on
 EXPOSE 8080
 

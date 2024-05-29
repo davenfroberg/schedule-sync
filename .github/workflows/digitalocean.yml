@@ -23,7 +23,7 @@ jobs:
     - name: Build and push backend
       uses: docker/build-push-action@v5
       with:
-        context: /back
+        context: ./back
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-backend:latest
@@ -31,7 +31,7 @@ jobs:
     - name: Build and push frontend
       uses: docker/build-push-action@v5
       with:
-        context: /front
+        context: ./front
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-frontend:latest

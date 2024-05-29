@@ -48,7 +48,7 @@ export default {
   padding: 50px;
   font-size: 20px;
   color: white;
-  background-color: #4CAF50; /* Change this to your preferred color */
+  background-color: #ff0000; /* Change this to your preferred color */
   border: none;
   cursor: pointer;
   margin: 10px;

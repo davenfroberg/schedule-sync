@@ -1,5 +1,5 @@
 import pymysql
-import config
+import os
 
 """
 This file contains the functions to connect to the database and run a SQL query in the database.
@@ -9,11 +9,11 @@ This file contains the functions to connect to the database and run a SQL query 
 def query(sql_query: str):
     # Connect to the database
     connection = pymysql.connect(
-        host=config.host,
-        port=config.port,
-        user=config.user,
-        password=config.password,
-        database=config.database
+        host=os.environ['DB_HOST'],
+        port=os.environ['DB_PORT'],
+        user=os.environ['DB_USER'],
+        password=os.environ['DB_PASSWORD'],
+        database=os.environ['DB_DATABASE']
     )
 
     # Create a cursor object

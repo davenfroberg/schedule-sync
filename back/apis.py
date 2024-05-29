@@ -11,7 +11,6 @@ import register as reg
 
 app = Flask(__name__)
 
-
 @app.route('/api/userprofile', methods=['GET'])
 def userinfo():
     titles = connect.query("SHOW COLUMNS FROM Students")
@@ -43,7 +42,7 @@ def userinfo():
 
 @app.route('/api/friends', methods=['GET'])
 def friends():
-    friend_titles = connect.query("SHOW COLUMNS FROM Friends")
+    friend_titles = connect.query("SHOW COLUMNS FROM friends")
 
     username = request.args.get('username')
 
@@ -54,8 +53,8 @@ def friends():
     if count == 0:
         return jsonify({'error': 'Username does not exist'}), 400
 
-    record_count = connect.query(f"SELECT COUNT(*) FROM Friends WHERE username = '{username}'")[0][0]
-    results = connect.query(f"SELECT * FROM Friends WHERE username = '{username}'")
+    record_count = connect.query(f"SELECT COUNT(*) FROM friends WHERE username = '{username}'")[0][0]
+    results = connect.query(f"SELECT * FROM friends WHERE username = '{username}'")
     dictionary = {}
     dictionary['count'] = record_count
 
@@ -457,8 +456,8 @@ def removefriend():
         return jsonify({'error': 'Missing friendUsername field'}), 400
 
     try:
-        connect.query(f"DELETE FROM Friends WHERE username='{username}' AND friendUsername='{friend_username}'")
-        connect.query(f"DELETE FROM Friends WHERE username='{friend_username}' AND friendUsername='{username}'")
+        connect.query(f"DELETE FROM friends WHERE username='{username}' AND friendUsername='{friend_username}'")
+        connect.query(f"DELETE FROM friends WHERE username='{friend_username}' AND friendUsername='{username}'")
         return jsonify({'success': 'Friend removed'}), 200
     except:
         return jsonify({'error': 'Could not remove friend'}), 400
@@ -523,12 +522,12 @@ def addfriend():
         return jsonify({'error': 'Missing friendUsername field'}), 400
 
     try:
-        connect.query(f"INSERT INTO Friends VALUES ('{data['username']}', '{data['friendUsername']}')")
-        connect.query(f"INSERT INTO Friends VALUES ('{data['friendUsername']}', '{data['username']}')")
+        connect.query(f"INSERT INTO friends VALUES ('{data['username']}', '{data['friendUsername']}')")
+        connect.query(f"INSERT INTO friends VALUES ('{data['friendUsername']}', '{data['username']}')")
         return jsonify({'success': 'Friend made'}), 200
     except:
         return jsonify({'error': 'Could not make friend'}), 400
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5001)

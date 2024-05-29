@@ -1,0 +1,52 @@
+name: CD to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      
+    - name: Build and push backend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./back
+        file: ./back/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-backend:latest
+        
+    - name: Build and push frontend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./front
+        file: ./front/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-frontend:latest
+
+    - name: SSH to DigitalOcean Droplet
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.DO_HOST }}
+        username: ${{ secrets.DO_USERNAME }}
+        key: ${{ secrets.DO_SSH_KEY }}
+        script: |
+          cd /root/git/schedule-sync
+          docker compose down
+          docker compose pull
+          docker compose up -d
+          docker image prune -f

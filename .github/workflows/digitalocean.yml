@@ -1,0 +1,44 @@
+name: CD to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+    - name: Build backend docker image
+      working-directory: back
+      run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-backend:latest .
+
+    - name: Push backend Docker image
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-backend:latest
+
+    - name: Build frotned docker image
+      working-directory: front
+      run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-frontend:latest .
+
+    - name: Push frontend Docker image
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-frontend:latest
+
+    - name: SSH to DigitalOcean Droplet
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.DO_HOST }}
+        username: ${{ secrets.DO_USERNAME }}
+        key: ${{ secrets.DO_SSH_KEY }}
+        script: |
+          cd /root/git/schedule-sync
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-frontend:latest
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/schedule-sync-backend:latest
+          docker compose down
+          docker compose up

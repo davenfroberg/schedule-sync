@@ -48,7 +48,7 @@ export default {
   padding: 50px;
   font-size: 20px;
   color: white;
-  background-color: #ff0000; /* Change this to your preferred color */
+  background-color: #c4c4c4; /* Change this to your preferred color */
   border: none;
   cursor: pointer;
   margin: 10px;
@@ -57,6 +57,6 @@ export default {
 }
 
 .user-button:hover {
-  background-color: #45a049; /* Change this to your preferred hover color */
+  background-color: #a1a1a1; /* Change this to your preferred hover color */
 }
 </style>

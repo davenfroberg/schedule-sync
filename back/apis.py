@@ -36,7 +36,6 @@ def userinfo():
 
     data_dict = dict(zip(keys, values))
 
-    # Convert the dictionary to a JSON-formatted string
     return jsonify(data_dict)
 
 
@@ -75,7 +74,6 @@ def friends():
 
     dictionary['results'] = all_friends
 
-    # Convert the dictionary to a JSON-formatted string
     return jsonify(dictionary)
 
 
@@ -84,14 +82,11 @@ def repeat_events(start_date, days_of_week, max_repeats):
     current_date = start_date
 
     while repeats < max_repeats:
-        # Check if the current day of the week matches any specified days
         if current_date.strftime('%a') in days_of_week:
-            # Yield the date without the time portion
             yield current_date.strftime('%Y-%m-%d')
 
             repeats += 1
 
-        # Move to the next day based on the specific days mentioned
         if 'Mon' in days_of_week:
             current_date += timedelta(days=1)
         elif 'Tue' in days_of_week:
@@ -113,7 +108,6 @@ def registeredcourses():
 
     term = '2023W2'  # Adjust the term as needed
 
-    # Query to fetch enrolled courses for a specific term
     sql_query = f"""
     SELECT
         Sections.term,
@@ -143,25 +137,20 @@ def registeredcourses():
         }
         return jsonify(response_dict), 200
 
-    # Define the keys for the JSON response
     keys = ['term', 'section', 'courseNum', 'courseDept', 'daysOfWeek', 'startTime', 'endTime']
 
-    # Create a list of dictionaries for each course
     all_enrollments = [dict(zip(keys, course)) for course in results]
 
-    # Combine courseDept and courseNum into courseName
     for course in all_enrollments:
         course['courseName'] = f"{course['courseDept']} {course['courseNum']}"
         del course['courseDept']
         del course['courseNum']
 
-        # Generate repeated events based on days of the week
         start_date = datetime.strptime('2024-01-15', '%Y-%m-%d')
         days_of_week = course['daysOfWeek']
         max_repeats = 10
         course['events'] = list(repeat_events(start_date, days_of_week, max_repeats))
 
-    # Create the final response dictionary
     response_dict = {
         'count': len(all_enrollments),
         'results': all_enrollments
@@ -172,7 +161,7 @@ def registeredcourses():
 
 @app.route('/api/login', methods=['POST'])
 def login():
-    data = request.get_json() #json body
+    data = request.get_json()
     if 'username' not in data:
         return jsonify({'error': 'Missing username field'}), 400
     elif 'password' not in data:
@@ -465,7 +454,7 @@ def removefriend():
 
 @app.route('/api/addcourse', methods=['POST'])
 def addcourse():
-    data = request.get_json() #json body
+    data = request.get_json()
     if 'username' not in data:
         return jsonify({'error': 'Missing username field'}), 400
     elif 'section' not in data:
@@ -492,7 +481,7 @@ def addcourse():
 
 @app.route('/api/register', methods=['POST'])
 def register():
-    data = request.get_json() #json body
+    data = request.get_json()
     first_name = ""
     last_name = ""
     if 'username' not in data:
@@ -515,7 +504,7 @@ def register():
 
 @app.route('/api/addfriend', methods=['POST'])
 def addfriend():
-    data = request.get_json() #json body
+    data = request.get_json()
     if 'username' not in data:
         return jsonify({'error': 'Missing username field'}), 400
     elif 'friendUsername' not in data:

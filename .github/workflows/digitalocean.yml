@@ -1,4 +1,4 @@
-name: CD to DigitalOcean
+name: Build and deploy to DigitalOcean
 
 on:
   push:
